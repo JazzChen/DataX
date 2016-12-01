@@ -71,6 +71,8 @@ public class MongoDBReader extends Reader {
 
         private String query = null;
 
+        private JSONArray aggregate = null;
+
         private JSONArray mongodbColumnMeta = null;
         private Long batchSize = null;
         /**
@@ -107,24 +109,46 @@ public class MongoDBReader extends Reader {
                     pageSize = modCount;
                 }
                 MongoCursor<Document> dbCursor = null;
-                if(!Strings.isNullOrEmpty(query)) {
-                    dbCursor = col.find(BsonDocument.parse(query)).sort(sort)
-                            .skip(skipCount.intValue()).limit(pageSize).iterator();
+                if (aggregate == null) {
+                    if (!Strings.isNullOrEmpty(query)) {
+                        dbCursor = col.find(BsonDocument.parse(query)).sort(sort).skip(skipCount.intValue())
+                                .limit(pageSize).iterator();
+                    } else {
+                        dbCursor = col.find().sort(sort).skip(skipCount.intValue()).limit(pageSize).iterator();
+                    }
                 } else {
-                    dbCursor = col.find().sort(sort)
-                            .skip(skipCount.intValue()).limit(pageSize).iterator();
+                    List pipeline = new ArrayList();
+                    if (!Strings.isNullOrEmpty(query)) {
+                        BsonDocument matchStage = new BsonDocument("$match", BsonDocument.parse(query));
+                        pipeline.add(matchStage);
+                    }
+                    BsonDocument sortStage = new BsonDocument("$sort", sort);
+                    BsonDocument skipStage = BsonDocument.parse(String.format("{$skip : %s }", skipCount));
+                    BsonDocument limitStage = BsonDocument.parse(String.format("{$limit: %s}", pageSize));
+                    pipeline.add(sortStage);
+                    pipeline.add(skipStage);
+                    pipeline.add(limitStage);
+
+                    Iterator inputPipeLineItera = aggregate.iterator();
+                    while (inputPipeLineItera.hasNext()) {
+                        JSONObject jsObj = (JSONObject) inputPipeLineItera.next();
+                        BsonDocument stage = BsonDocument.parse(jsObj.toJSONString());
+                        pipeline.add(stage);
+                    }
+
+                    dbCursor = col.aggregate(pipeline).iterator();
                 }
+
                 while (dbCursor.hasNext()) {
                     Document item = dbCursor.next();
                     Record record = recordSender.createRecord();
                     Iterator columnItera = mongodbColumnMeta.iterator();
                     while (columnItera.hasNext()) {
-                        JSONObject column = (JSONObject)columnItera.next();
+                        JSONObject column = (JSONObject) columnItera.next();
                         Object tempCol = item.get(column.getString(KeyConstant.COLUMN_NAME));
                         if (tempCol == null) {
-                            continue;
-                        }
-                        if (tempCol instanceof Double) {
+                            record.addColumn(new StringColumn(""));
+                        } else if (tempCol instanceof Double) {
                             record.addColumn(new DoubleColumn((Double) tempCol));
                         } else if (tempCol instanceof Boolean) {
                             record.addColumn(new BoolColumn((Boolean) tempCol));
@@ -170,6 +194,7 @@ public class MongoDBReader extends Reader {
             
             this.collection = readerSliceConfig.getString(KeyConstant.MONGO_COLLECTION_NAME);
             this.query = readerSliceConfig.getString(KeyConstant.MONGO_QUERY);
+            this.aggregate = JSON.parseArray(readerSliceConfig.getString(KeyConstant.MONGO_AGGREGATE));
             this.mongodbColumnMeta = JSON.parseArray(readerSliceConfig.getString(KeyConstant.MONGO_COLUMN));
             this.batchSize = readerSliceConfig.getLong(KeyConstant.BATCH_SIZE);
             this.skipCount = readerSliceConfig.getLong(KeyConstant.SKIP_COUNT);

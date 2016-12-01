@@ -58,6 +58,10 @@ public class KeyConstant {
      */
     public static final String MONGO_PRIMIARY_ID_META = "_id";
     /**
+     * MongoDB的聚合查询
+     */
+    public static final String MONGO_AGGREGATE = "aggregate";
+    /**
      * 判断是否为数组类型
      * @param type 数据类型
      * @return
