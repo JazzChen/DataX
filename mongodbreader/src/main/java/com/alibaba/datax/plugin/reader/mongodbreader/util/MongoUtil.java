@@ -22,7 +22,12 @@ public class MongoUtil {
             throw DataXException.asDataXException(MongoDBReaderErrorCode.ILLEGAL_VALUE,"不合法参数");
         }
         try {
-            return new MongoClient(parseServerAddress(addressList));
+            List<ServerAddress> addrList = parseServerAddress(addressList);
+            if (addrList.size() == 1) {
+                return new MongoClient(addrList.get(0));
+            } else {
+                return new MongoClient(addrList);
+            }
         } catch (UnknownHostException e) {
             throw DataXException.asDataXException(MongoDBReaderErrorCode.ILLEGAL_ADDRESS,"不合法的地址");
         } catch (NumberFormatException e) {
@@ -40,8 +45,12 @@ public class MongoUtil {
         }
         try {
             MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
-            return new MongoClient(parseServerAddress(addressList), Arrays.asList(credential));
-
+            List<ServerAddress> addrList = parseServerAddress(addressList);
+            if (addrList.size() == 1) {
+                return new MongoClient(addrList.get(0), Arrays.asList(credential));
+            } else {
+                return new MongoClient(addrList, Arrays.asList(credential));
+            }
         } catch (UnknownHostException e) {
             throw DataXException.asDataXException(MongoDBReaderErrorCode.ILLEGAL_ADDRESS,"不合法的地址");
         } catch (NumberFormatException e) {

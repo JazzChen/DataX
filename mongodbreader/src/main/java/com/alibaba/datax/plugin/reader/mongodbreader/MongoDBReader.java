@@ -123,7 +123,7 @@ public class MongoDBReader extends Reader {
                         pipeline.add(matchStage);
                     }
                     BsonDocument sortStage = new BsonDocument("$sort", sort);
-                    BsonDocument skipStage = BsonDocument.parse(String.format("{$skip : %s }", skipCount));
+                    BsonDocument skipStage = BsonDocument.parse(String.format("{$skip: %s}", skipCount));
                     BsonDocument limitStage = BsonDocument.parse(String.format("{$limit: %s}", pageSize));
                     pipeline.add(sortStage);
                     pipeline.add(skipStage);
