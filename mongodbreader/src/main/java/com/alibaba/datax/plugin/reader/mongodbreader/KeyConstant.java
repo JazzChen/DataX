@@ -42,6 +42,10 @@ public class KeyConstant {
      */
     public static final String COLUMN_TYPE = "type";
     /**
+     * 每个列的默认值（若空）
+     */
+    public static final String COLUMN_DEFAULT = "default";
+    /**
      * 列分隔符
      */
     public static final String COLUMN_SPLITTER = "splitter";

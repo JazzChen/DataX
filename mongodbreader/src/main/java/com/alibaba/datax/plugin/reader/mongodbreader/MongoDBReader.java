@@ -147,7 +147,47 @@ public class MongoDBReader extends Reader {
                         JSONObject column = (JSONObject) columnItera.next();
                         Object tempCol = item.get(column.getString(KeyConstant.COLUMN_NAME));
                         if (tempCol == null) {
-                            record.addColumn(new StringColumn(""));
+                            String defaultValue = column.getString(KeyConstant.COLUMN_DEFAULT);
+                            String columnType = column.getString(KeyConstant.COLUMN_TYPE);
+                            if (columnType.equalsIgnoreCase("String")) {
+                                if (defaultValue == null) {
+                                    record.addColumn(new StringColumn(""));
+                                } else {
+                                    record.addColumn(new StringColumn(defaultValue));
+                                }
+                            } else if (columnType.equalsIgnoreCase("Double")) {
+                                if (defaultValue == null) {
+                                    record.addColumn(new DoubleColumn(-1));
+                                } else {
+                                    record.addColumn(new DoubleColumn(defaultValue));
+                                }
+                            } else if (columnType.equalsIgnoreCase("Boolean")) {
+                                if (defaultValue == null) {
+                                    record.addColumn(new BoolColumn(false));
+                                } else {
+                                    record.addColumn(new BoolColumn(defaultValue));
+                                }
+                            } else if (columnType.equalsIgnoreCase("Date")) {
+                                if (defaultValue == null) {
+                                    // 1970-01-01 time stamp
+                                    record.addColumn(new DateColumn(0L));
+                                } else {
+                                    Long defaultTS = Long.valueOf(defaultValue);
+                                    record.addColumn(new DateColumn(defaultTS));
+                                }
+                            } else if (columnType.equalsIgnoreCase("Int")) {
+                                if (defaultValue == null) {
+                                    record.addColumn(new LongColumn(-1));
+                                } else {
+                                    record.addColumn(new LongColumn(defaultValue));
+                                }
+                            } else if (columnType.equalsIgnoreCase("Long")) {
+                                if (defaultValue == null) {
+                                    record.addColumn(new LongColumn(-1));
+                                } else {
+                                    record.addColumn(new LongColumn(defaultValue));
+                                }
+                            }
                         } else if (tempCol instanceof Double) {
                             record.addColumn(new DoubleColumn((Double) tempCol));
                         } else if (tempCol instanceof Boolean) {
