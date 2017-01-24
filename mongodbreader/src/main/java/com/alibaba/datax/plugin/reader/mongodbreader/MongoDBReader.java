@@ -149,7 +149,7 @@ public class MongoDBReader extends Reader {
                         if (tempCol == null) {
                             String defaultValue = column.getString(KeyConstant.COLUMN_DEFAULT);
                             String columnType = column.getString(KeyConstant.COLUMN_TYPE);
-                            if (columnType.equalsIgnoreCase("String")) {
+                            if (columnType.equalsIgnoreCase("String") || columnType.equalsIgnoreCase("array")) {
                                 if (defaultValue == null) {
                                     record.addColumn(new StringColumn(""));
                                 } else {
