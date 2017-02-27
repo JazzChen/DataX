@@ -262,11 +262,11 @@ HdfsWriter提供向HDFS文件系统指定路径中写入TEXTFile文件和ORCFile
 * **haveKerberos**
 
 	* 描述：是否有Kerberos认证，默认false<br />
- 
+
 		 例如如果用户配置true，则配置项kerberosKeytabFilePath，kerberosPrincipal为必填。
 
  	* 必选：haveKerberos 为true必选 <br />
- 
+
  	* 默认值：false <br />
 
 * **kerberosKeytabFilePath**
@@ -274,7 +274,7 @@ HdfsWriter提供向HDFS文件系统指定路径中写入TEXTFile文件和ORCFile
 	* 描述：Kerberos认证 keytab文件路径，绝对路径<br />
 
  	* 必选：否 <br />
- 
+
  	* 默认值：无 <br />
 
 * **kerberosPrincipal**
@@ -282,7 +282,7 @@ HdfsWriter提供向HDFS文件系统指定路径中写入TEXTFile文件和ORCFile
 	* 描述：Kerberos认证Principal名，如xxxx/hadoopclient@xxx.xxx <br />
 
  	* 必选：haveKerberos 为true必选 <br />
- 
+
  	* 默认值：无 <br />
 
 

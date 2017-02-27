@@ -7,7 +7,7 @@ public class Key {
     // must have
     public static final String PATH = "path";
     //must have
-    public final static String DEFAULT_FS = "defaultFS";
+    public final static String HADOOPCONFPATH = "hadoopConfPath";
     //must have
     public final static String FILE_TYPE = "fileType";
     // must have

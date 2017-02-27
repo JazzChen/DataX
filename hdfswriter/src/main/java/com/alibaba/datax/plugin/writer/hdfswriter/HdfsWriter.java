@@ -23,6 +23,7 @@ public class HdfsWriter extends Writer {
         private Configuration writerSliceConfig = null;
 
         private String defaultFS;
+        private String hadoopConfPath;
         private String path;
         private String fileType;
         private String fileName;
@@ -44,11 +45,12 @@ public class HdfsWriter extends Writer {
             //创建textfile存储
             hdfsHelper = new HdfsHelper();
 
-            hdfsHelper.getFileSystem(defaultFS, this.writerSliceConfig);
+            hdfsHelper.getFileSystem(hadoopConfPath, this.writerSliceConfig);
+            this.defaultFS = hdfsHelper.hadoopConf.get("fs.defaultFS");
         }
 
         private void validateParameter() {
-            this.defaultFS = this.writerSliceConfig.getNecessaryValue(Key.DEFAULT_FS, HdfsWriterErrorCode.REQUIRED_VALUE);
+            this.hadoopConfPath = this.writerSliceConfig.getNecessaryValue(Key.HADOOPCONFPATH, HdfsWriterErrorCode.REQUIRED_VALUE);
             //fileType check
             this.fileType = this.writerSliceConfig.getNecessaryValue(Key.FILE_TYPE, HdfsWriterErrorCode.REQUIRED_VALUE);
             if( !fileType.equalsIgnoreCase("ORC") && !fileType.equalsIgnoreCase("TEXT")){
@@ -327,7 +329,7 @@ public class HdfsWriter extends Writer {
 
         private Configuration writerSliceConfig;
 
-        private String defaultFS;
+        private String hadoopConfPath;
         private String fileType;
         private String fileName;
 
@@ -337,13 +339,13 @@ public class HdfsWriter extends Writer {
         public void init() {
             this.writerSliceConfig = this.getPluginJobConf();
 
-            this.defaultFS = this.writerSliceConfig.getString(Key.DEFAULT_FS);
+            this.hadoopConfPath = this.writerSliceConfig.getString(Key.HADOOPCONFPATH);
             this.fileType = this.writerSliceConfig.getString(Key.FILE_TYPE);
             //得当的已经是绝对路径，eg：hdfs://10.101.204.12:9000/user/hive/warehouse/writer.db/text/test.textfile
             this.fileName = this.writerSliceConfig.getString(Key.FILE_NAME);
 
             hdfsHelper = new HdfsHelper();
-            hdfsHelper.getFileSystem(defaultFS, writerSliceConfig);
+            hdfsHelper.getFileSystem(hadoopConfPath, writerSliceConfig);
         }
 
         @Override
