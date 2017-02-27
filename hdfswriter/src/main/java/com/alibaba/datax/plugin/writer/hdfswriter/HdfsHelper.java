@@ -38,9 +38,11 @@ public  class HdfsHelper {
     private String  kerberosKeytabFilePath;
     private String  kerberosPrincipal;
 
-    public void getFileSystem(String defaultFS, Configuration taskConfig){
+    public void getFileSystem(String hadoopConfPath, Configuration taskConfig){
         hadoopConf = new org.apache.hadoop.conf.Configuration();
-        hadoopConf.set("fs.defaultFS", defaultFS);
+        hadoopConf.addResource(new Path(hadoopConfPath+"/core-site.xml"));
+        hadoopConf.addResource(new Path(hadoopConfPath+"/hdfs-site.xml"));
+
         //是否有Kerberos认证
         this.haveKerberos = taskConfig.getBool(Key.HAVE_KERBEROS, false);
         if(haveKerberos){
@@ -53,20 +55,20 @@ public  class HdfsHelper {
         try {
             fileSystem = FileSystem.get(conf);
         } catch (IOException e) {
-            String message = String.format("获取FileSystem时发生网络IO异常,请检查您的网络是否正常!HDFS地址：[%s]",
-                    "message:defaultFS =" + defaultFS);
+            String message = String.format("获取FileSystem时发生网络IO异常,请检查您的网络是否正常!HDFS配置路径：[%s]",
+                    "message:hadoopConfPath =" + hadoopConfPath);
             LOG.error(message);
             throw DataXException.asDataXException(HdfsWriterErrorCode.CONNECT_HDFS_IO_ERROR, e);
         }catch (Exception e) {
-            String message = String.format("获取FileSystem失败,请检查HDFS地址是否正确: [%s]",
-                    "message:defaultFS =" + defaultFS);
+            String message = String.format("获取FileSystem失败,请检查HDFS配置路径是否正确: [%s]",
+                    "message:hadoopConfPath =" + hadoopConfPath);
             LOG.error(message);
             throw DataXException.asDataXException(HdfsWriterErrorCode.CONNECT_HDFS_IO_ERROR, e);
         }
 
         if(null == fileSystem || null == conf){
-            String message = String.format("获取FileSystem失败,请检查HDFS地址是否正确: [%s]",
-                    "message:defaultFS =" + defaultFS);
+            String message = String.format("获取FileSystem失败,请检查HDFS配置路径是否正确: [%s]",
+                    "message:hadoopConfPath =" + hadoopConfPath);
             LOG.error(message);
             throw DataXException.asDataXException(HdfsWriterErrorCode.CONNECT_HDFS_IO_ERROR, message);
         }
