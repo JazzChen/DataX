@@ -101,7 +101,7 @@ HdfsWriter提供向HDFS文件系统指定路径中写入TEXTFile文件和ORCFile
                 "writer": {
                     "name": "hdfswriter",
                     "parameter": {
-                        "defaultFS": "hdfs://xxx:port",
+                        "hadoopConfPath": "/etc/hadoop/conf",
                         "fileType": "orc",
                         "path": "/user/hive/warehouse/writerorc.db/orcfull",
                         "fileName": "xxxx",
@@ -168,10 +168,9 @@ HdfsWriter提供向HDFS文件系统指定路径中写入TEXTFile文件和ORCFile
 
 ### 3.2 参数说明
 
-* **defaultFS**
+* **hadoopConfPath**
 
-	* 描述：Hadoop hdfs文件系统namenode节点地址。格式：hdfs://ip:端口；例如：hdfs://127.0.0.1:9000<br />
-
+	* 描述：Hadoop hdfs配置文件地址。格式：/etc/hadoop/conf
 	* 必选：是 <br />
 
 	* 默认值：无 <br />
