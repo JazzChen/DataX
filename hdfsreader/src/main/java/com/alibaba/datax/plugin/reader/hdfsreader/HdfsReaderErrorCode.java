@@ -5,7 +5,7 @@ import com.alibaba.datax.common.spi.ErrorCode;
 public enum HdfsReaderErrorCode implements ErrorCode {
     BAD_CONFIG_VALUE("HdfsReader-00", "您配置的值不合法."),
     PATH_NOT_FIND_ERROR("HdfsReader-01", "您未配置path值"),
-    DEFAULT_FS_NOT_FIND_ERROR("HdfsReader-02", "您未配置defaultFS值"),
+    HADOOPCONFPATH_NOT_FIND_ERROR("HdfsReader-02", "您未配置hadoopConfPath值"),
     ILLEGAL_VALUE("HdfsReader-03", "值错误"),
     CONFIG_INVALID_EXCEPTION("HdfsReader-04", "参数配置错误"),
     REQUIRED_VALUE("HdfsReader-05", "您缺失了必须填写的参数值."),

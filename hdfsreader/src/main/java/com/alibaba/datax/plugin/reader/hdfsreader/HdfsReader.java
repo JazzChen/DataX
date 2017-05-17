@@ -54,8 +54,8 @@ public class HdfsReader extends Reader {
         }
 
         public void validate(){
-            this.readerOriginConfig.getNecessaryValue(Key.DEFAULT_FS,
-                    HdfsReaderErrorCode.DEFAULT_FS_NOT_FIND_ERROR);
+            this.readerOriginConfig.getNecessaryValue(Key.HADOOPCONFPATH,
+                    HdfsReaderErrorCode.HADOOPCONFPATH_NOT_FIND_ERROR);
 
             // path check
             String pathInString = this.readerOriginConfig.getNecessaryValue(Key.PATH, HdfsReaderErrorCode.REQUIRED_VALUE);
