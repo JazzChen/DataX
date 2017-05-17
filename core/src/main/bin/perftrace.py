@@ -90,7 +90,7 @@ warn: test write performance will write data into your table, you can use a temp
 '''
 
 def printCopyright():
-    DATAX_VERSION = 'UNKNOWN_DATAX_VERSION'
+    DATAX_VERSION = 'DATAX-OPENSOURCE-3.0-Welab'
     print '''
 DataX Util Tools (%s), From Alibaba !
 Copyright (C) 2010-2016, Alibaba Group. All Rights Reserved.''' % DATAX_VERSION
