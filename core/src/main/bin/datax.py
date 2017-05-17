@@ -20,7 +20,7 @@ def isWindows():
 
 DATAX_HOME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DATAX_VERSION = 'DATAX-OPENSOURCE-3.0'
+DATAX_VERSION = 'DATAX-OPENSOURCE-3.0-Welab'
 if isWindows():
     codecs.register(lambda name: name == 'cp65001' and codecs.lookup('utf-8') or None)
     CLASS_PATH = ("%s/lib/*") % (DATAX_HOME)

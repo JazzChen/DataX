@@ -53,7 +53,6 @@ public class DFSUtil {
 
     private static final int DIRECTORY_SIZE_GUESS = 16 * 1024;
 
-    public static final String HDFS_DEFAULTFS_KEY = "fs.defaultFS";
     public static final String HADOOP_SECURITY_AUTHENTICATION_KEY = "hadoop.security.authentication";
 
 
@@ -61,15 +60,9 @@ public class DFSUtil {
         hadoopConf = new org.apache.hadoop.conf.Configuration();
         //io.file.buffer.size 性能参数
         //http://blog.csdn.net/yangjl38/article/details/7583374
-        Configuration hadoopSiteParams = taskConfig.getConfiguration(Key.HADOOP_CONFIG);
-        JSONObject hadoopSiteParamsAsJsonObject = JSON.parseObject(taskConfig.getString(Key.HADOOP_CONFIG));
-        if (null != hadoopSiteParams) {
-            Set<String> paramKeys = hadoopSiteParams.getKeys();
-            for (String each : paramKeys) {
-                hadoopConf.set(each, hadoopSiteParamsAsJsonObject.getString(each));
-            }
-        }
-        hadoopConf.set(HDFS_DEFAULTFS_KEY, taskConfig.getString(Key.DEFAULT_FS));
+        String hadoopConfPath = taskConfig.getString(Key.HADOOPCONFPATH);
+        hadoopConf.addResource(new Path(hadoopConfPath+"/core-site.xml"));
+        hadoopConf.addResource(new Path(hadoopConfPath+"/hdfs-site.xml"));
 
         //是否有Kerberos认证
         this.haveKerberos = taskConfig.getBool(Key.HAVE_KERBEROS, false);

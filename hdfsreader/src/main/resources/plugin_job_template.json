@@ -2,7 +2,7 @@
     "name": "hdfsreader",
     "parameter": {
         "path": "",
-        "defaultFS": "",
+        "hadoopConfPath": "",
         "column": [],
         "fileType": "orc",
         "encoding": "UTF-8",
