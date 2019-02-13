@@ -122,6 +122,116 @@ MongoDBReader通过Datax框架从MongoDB并行的读取数据，通过主控的J
 	        ]
 	    }
         }
+
+```
+{
+    "job": {
+        "content": [
+            {
+                "reader": {
+                    "name": "mongodbreader",
+                    "parameter": {
+                        "address": [
+                            "x.x.x.x:xxx"
+                        ],
+                        "userName": "xxxx",
+                        "userPassword": "xxxx",
+                        "dbName": "business",
+                        "collectionName": "BlackList",
+                        "query": "{_id: {$lt: ObjectId('$endOID')}}",
+                        "aggregate": [
+                             {
+                                "$project": {
+                                    "c_mobile": "$content.手机号码",
+                                    "c_addedby": "$content.添加人员",
+                                    "c_addedtime": "$content.添加时间",
+                                    "c_cnid": "$content.身份证号",
+                                    "c_debtamount": "$content.欠款总额",
+                                    "c_debtcount": "$content.欠款笔数",
+                                    "c_debtdays": "$content.拖欠天数",
+                                    "c_reason": "$content.添加原因",
+                                    "c_deviceid": "$content.设备ID",
+                                    "c_detail": "$content.详情",
+                                    "c_name": "$content.姓名",
+                                    "title": 1,
+                                    "tel": 1,
+                                    "type": 1,
+                                    "tstamp": 1,
+                                    "company": 1,
+                                    "addedby": 1,
+                                    "validTime": 1,
+                                    "info": 1
+                              }
+                            }
+                        ],
+                        "column": [
+                            { "name": "c_mobile", "type": "string" },
+                            { "name": "c_addedby", "type": "string" },
+                            { "name": "c_addedtime", "type": "string" },
+                            { "name": "c_cnid", "type": "string" },
+                            { "name": "c_debtamount", "type": "string" },
+                            { "name": "c_debtcount", "type": "string" },
+                            { "name": "c_debtdays", "type": "string" },
+                            { "name": "c_reason", "type": "string" },
+                            { "name": "c_deviceid", "type": "string" },
+                            { "name": "c_detail", "type": "string" },
+                            { "name": "c_name", "type": "string" },
+                            { "name": "title", "type": "string" },
+                            { "name": "tel", "type": "string" },
+                            { "name": "type", "type": "string" },
+                            { "name": "tstamp", "type": "string" },
+                            { "name": "company", "type": "string" },
+                            { "name": "addedby", "type": "string" },
+                            { "name": "validTime", "type": "string" },
+                            { "name": "info", "type": "string" }
+                        ]
+                    }
+                },
+                "writer": {
+                    "name": "hdfswriter",
+                    "parameter": {
+                        "hadoopConfPath": "$hadoopConfPath",
+                        "fileType": "orc",
+                        "path": "/user/hive/warehouse/source_data.db/blacklist/importday=$date",
+                        "fileName": "$date",
+                        "column": [
+                            { "name": "c_mobile", "type": "string" },
+                            { "name": "c_addedby", "type": "string" },
+                            { "name": "c_addedtime", "type": "string" },
+                            { "name": "c_cnid", "type": "string" },
+                            { "name": "c_debtamount", "type": "string" },
+                            { "name": "c_debtcount", "type": "string" },
+                            { "name": "c_debtdays", "type": "string" },
+                            { "name": "c_reason", "type": "string" },
+                            { "name": "c_deviceid", "type": "string" },
+                            { "name": "c_detail", "type": "string" },
+                            { "name": "c_name", "type": "string" },
+                            { "name": "title", "type": "string" },
+                            { "name": "tel", "type": "string" },
+                            { "name": "type", "type": "string" },
+                            { "name": "tstamp", "type": "string" },
+                            { "name": "company", "type": "string" },
+                            { "name": "addedby", "type": "string" },
+                            { "name": "validtime", "type": "string" },
+                            { "name": "info", "type": "string" }
+                        ],
+                        "writeMode": "append",
+                        "fieldDelimiter": "\t",
+                        "compress": "None"
+                    }
+                }
+            }
+        ],
+        "setting": {
+            "speed": {
+                "channel": "1"
+            }
+        }
+    }
+}
+
+```
+
 #### 4 参数说明
 
 * address： MongoDB的数据地址信息，因为MonogDB可能是个集群，则ip端口信息需要以Json数组的形式给出。【必填】
