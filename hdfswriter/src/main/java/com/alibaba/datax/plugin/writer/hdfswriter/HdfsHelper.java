@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 public  class HdfsHelper {
     public static final Logger LOG = LoggerFactory.getLogger(HdfsWriter.Job.class);
@@ -42,6 +44,16 @@ public  class HdfsHelper {
         hadoopConf = new org.apache.hadoop.conf.Configuration();
         hadoopConf.addResource(new Path(hadoopConfPath+"/core-site.xml"));
         hadoopConf.addResource(new Path(hadoopConfPath+"/hdfs-site.xml"));
+
+        Configuration hadoopSiteParams = taskConfig.getConfiguration(Key.HADOOP_CONFIG);
+        JSONObject hadoopSiteParamsAsJsonObject = JSON.parseObject(taskConfig.getString(Key.HADOOP_CONFIG));
+        if (null != hadoopSiteParams) {
+            Set<String> paramKeys = hadoopSiteParams.getKeys();
+            for (String each : paramKeys) {
+                hadoopConf.set(each, hadoopSiteParamsAsJsonObject.getString(each));
+            }
+        }
+
 
         //是否有Kerberos认证
         this.haveKerberos = taskConfig.getBool(Key.HAVE_KERBEROS, false);
