@@ -15,8 +15,8 @@ import signal
 import time
 import subprocess
 from optparse import OptionParser
-reload(sys)
-sys.setdefaultencoding('utf8')
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 
 ##begin cli & help logic
 def getOptionParser():
@@ -36,9 +36,12 @@ def getOptionParser():
 def getUsage():
     return '''
 The following params are available for -r --reader:
-    [these params is for rdbms reader, used to trace rdbms read performance, it's like datax's key]
-    *datasourceType: datasource type, may be mysql|drds|oracle|ads|sqlserver|postgresql|db2 etc...
-    *jdbcUrl:        datasource jdbc connection string, mysql as a example: jdbc:mysql://ip:port/database
+    [these params is for rdbms reader, used to trace rdbms read performance,
+it's like datax's key]
+    *datasourceType: datasource type, may be
+mysql|drds|oracle|ads|sqlserver|postgresql|db2 etc...
+    *jdbcUrl:        datasource jdbc connection string, mysql as a example:
+jdbc:mysql://ip:port/database
     *username:       username for datasource
     *password:       password for datasource
     *table:          table name for read data
@@ -48,37 +51,57 @@ The following params are available for -r --reader:
     fetchSize:       how many rows to be fetched at each communicate
 
     [these params is for stream reader, used to trace rdbms write performance]
-    reader-sliceRecordCount:  how man test data to mock(each channel), the default value is 10000
-    reader-column          :  stream reader while generate test data(type supports: string|long|date|double|bool|bytes; support constant value and random function)，demo: [{"type":"string","value":"abc"},{"type":"string","random":"10,20"}]
+    reader-sliceRecordCount:  how man test data to mock(each channel), the
+default value is 10000
+    reader-column          :  stream reader while generate test data(type
+supports: string|long|date|double|bool|bytes; support constant value and random
+function)，demo:
+[{"type":"string","value":"abc"},{"type":"string","random":"10,20"}]
 
 The following params are available for -w --writer:
-    [these params is for rdbms writer, used to trace rdbms write performance, it's like datax's key]
-    datasourceType:  datasource type, may be mysql|drds|oracle|ads|sqlserver|postgresql|db2|ads etc...
-    *jdbcUrl:        datasource jdbc connection string, mysql as a example: jdbc:mysql://ip:port/database
+    [these params is for rdbms writer, used to trace rdbms write performance,
+it's like datax's key]
+    datasourceType:  datasource type, may be
+mysql|drds|oracle|ads|sqlserver|postgresql|db2|ads etc...
+    *jdbcUrl:        datasource jdbc connection string, mysql as a example:
+jdbc:mysql://ip:port/database
     *username:       username for datasource
     *password:       password for datasource
     *table:          table name for write data
     column:          column to be writed, the default value is ['*']
-    batchSize:       how many rows to be storeed at each communicate, the default value is 512
-    preSql:          prepare sql to be executed before write data, the default value is ''
-    postSql:         post sql to be executed end of write data, the default value is ''
+    batchSize:       how many rows to be storeed at each communicate, the
+default value is 512
+    preSql:          prepare sql to be executed before write data, the default
+value is ''
+    postSql:         post sql to be executed end of write data, the default
+value is ''
     url:             required for ads, pattern is ip:port
     schme:           required for ads, ads database name
 
     [these params is for stream writer, used to trace rdbms read performance]
-    writer-print:           true means print data read from source datasource, the default value is false
+    writer-print:           true means print data read from source datasource,
+the default value is false
 
 The following params are available global control:
     -c --channel:    the number of concurrent tasks, the default value is 1
     -f --file:       existing completely dataX configuration file path
-    -t --type:       test read or write performance for a datasource, couble be reader or writer, in collaboration with -f --file
+    -t --type:       test read or write performance for a datasource, couble be
+reader or writer, in collaboration with -f --file
     -h --help:       print help message
 
 some demo:
-perftrace.py --channel=10 --reader='{"jdbcUrl":"jdbc:mysql://127.0.0.1:3306/database", "username":"", "password":"", "table": "", "where":"", "splitPk":"", "writer-print":"false"}'
-perftrace.py --channel=10 --writer='{"jdbcUrl":"jdbc:mysql://127.0.0.1:3306/database", "username":"", "password":"", "table": "", "reader-sliceRecordCount": "10000", "reader-column": [{"type":"string","value":"abc"},{"type":"string","random":"10,20"}]}'
-perftrace.py --file=/tmp/datax.job.json --type=reader --reader='{"writer-print": "false"}'
-perftrace.py --file=/tmp/datax.job.json --type=writer --writer='{"reader-sliceRecordCount": "10000", "reader-column": [{"type":"string","value":"abc"},{"type":"string","random":"10,20"}]}'
+perftrace.py --channel=10
+--reader='{"jdbcUrl":"jdbc:mysql://127.0.0.1:3306/database", "username":"",
+"password":"", "table": "", "where":"", "splitPk":"", "writer-print":"false"}'
+perftrace.py --channel=10
+--writer='{"jdbcUrl":"jdbc:mysql://127.0.0.1:3306/database", "username":"",
+"password":"", "table": "", "reader-sliceRecordCount": "10000", "reader-column":
+[{"type":"string","value":"abc"},{"type":"string","random":"10,20"}]}'
+perftrace.py --file=/tmp/datax.job.json --type=reader --reader='{"writer-print":
+"false"}'
+perftrace.py --file=/tmp/datax.job.json --type=writer
+--writer='{"reader-sliceRecordCount": "10000", "reader-column":
+[{"type":"string","value":"abc"},{"type":"string","random":"10,20"}]}'
 
 some example jdbc url pattern, may help:
 jdbc:oracle:thin:@ip:port:database
@@ -86,21 +109,20 @@ jdbc:mysql://ip:port/database
 jdbc:sqlserver://ip:port;DatabaseName=database
 jdbc:postgresql://ip:port/database
 warn: ads url pattern is ip:port
-warn: test write performance will write data into your table, you can use a temporary table just for test.
+warn: test write performance will write data into your table, you can use a
+temporary table just for test.
 '''
 
 def printCopyright():
     DATAX_VERSION = 'DATAX-OPENSOURCE-3.0-ByteDance'
-    print '''
-DataX Util Tools (%s), From Alibaba !
-Copyright (C) 2010-2016, Alibaba Group. All Rights Reserved.''' % DATAX_VERSION
+    print(''' DataX Util Tools (%s), From Alibaba !  Copyright (C) 2010-2016, Alibaba Group. All Rights Reserved.''' % DATAX_VERSION)
     sys.stdout.flush()
 
 
 def yesNoChoice():
     yes = set(['yes','y', 'ye', ''])
     no = set(['no','n'])
-    choice = raw_input().lower()
+    choice = input().lower()
     if choice in yes:
         return True
     elif choice in no:
@@ -113,12 +135,13 @@ def yesNoChoice():
 ##begin process logic
 def suicide(signum, e):
     global childProcess
-    print >> sys.stderr, "[Error] Receive unexpected signal %d, starts to suicide." % (signum)
+    print("[Error] Receive unexpected signal %d, starts to suicide." % (signum),
+file=sys.stderr)
     if childProcess:
         childProcess.send_signal(signal.SIGQUIT)
         time.sleep(1)
         childProcess.kill()
-    print >> sys.stderr, "DataX Process was killed ! you did ?"
+    print("DataX Process was killed ! you did ?", file=sys.stderr)
     sys.exit(-1)
 
 
@@ -144,7 +167,8 @@ def fork(command, isShell=False):
 #warn: if not '': -> true;   if not None: -> true
 def notNone(obj, context):
     if not obj:
-        raise Exception("Configuration property [%s] could not be blank!" % (context))
+        raise Exception("Configuration property [%s] could not be blank!" %
+(context))
 
 def attributeNotNone(obj, attributes):
     for key in attributes:
@@ -292,19 +316,19 @@ def readJobJsonFromLocal(jobConfigPath):
 
 
 def readJobJsonFromRemote(jobConfigPath):
-    import urllib
-    conn = urllib.urlopen(jobConfigPath)
+    import urllib.request, urllib.parse, urllib.error
+    conn = urllib.request.urlopen(jobConfigPath)
     jobJson = conn.read()
     return jobJson
 
 def parseJson(strConfig, context):
     try:
         return json.loads(strConfig)
-    except Exception, e:
+    except Exception as e:
         import traceback
         traceback.print_exc()
         sys.stdout.flush()
-        print >> sys.stderr, '%s %s need in line with json syntax' % (context, strConfig)
+        print('%s %s need in line with json syntax' % (context, strConfig), file=sys.stderr)
         sys.exit(-1)
 
 def convert(options, args):
@@ -355,7 +379,7 @@ def convert(options, args):
         traceWriterDict = parseJson(options.writer, 'writer config')
         return renderDataXJson(traceWriterDict, 'writer', options.channel)
     else:
-        print getUsage()
+        print(getUsage())
         sys.exit(-1)
     #dataxParams = {}
     #for opt, value in options.__dict__.items():
@@ -375,26 +399,27 @@ if __name__ == "__main__":
     dataxJobPath = os.path.join(os.getcwd(), "perftrace-" + str(uuid.uuid1()))
     jobConfigOk = True
     if os.path.exists(dataxJobPath):
-        print "file already exists, truncate and rewrite it? %s" % dataxJobPath
+        print("file already exists, truncate and rewrite it? %s" % dataxJobPath)
         if yesNoChoice():
             jobConfigOk = True
         else:
-            print "exit failed, because of file conflict"
+            print("exit failed, because of file conflict")
             sys.exit(-1)
     fileWriter = open(dataxJobPath, 'w')
     fileWriter.write(dataxTraceJobJson)
     fileWriter.close()
 
 
-    print "trace environments:"
-    print "dataxJobPath:  %s" % dataxJobPath
+    print("trace environments:")
+    print("dataxJobPath:  %s" % dataxJobPath)
     dataxHomePath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    print "dataxHomePath: %s" % dataxHomePath
+    print("dataxHomePath: %s" % dataxHomePath)
 
     dataxCommand = "%s %s" % (os.path.join(dataxHomePath, "bin", "datax.py"), dataxJobPath)
-    print "dataxCommand:  %s" % dataxCommand
+    print("dataxCommand:  %s" % dataxCommand)
 
     returncode = fork(dataxCommand, True)
     if options.delete == 'true':
         os.remove(dataxJobPath)
     sys.exit(returncode)
+
